@@ -1,0 +1,54 @@
+@page
+@model JobTracker.Pages.JobApplications.EditModel
+@{
+    ViewData["Title"] = "Edit Job Application";
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<div class="card shadow-sm p-4">
+    <form method="post">
+        <input type="hidden" asp-for="JobApplication.Id" />
+
+        <div class="form-group mb-3">
+            <label asp-for="JobApplication.CompanyName" class="form-label"></label>
+            <input asp-for="JobApplication.CompanyName" class="form-control" />
+            <span asp-validation-for="JobApplication.CompanyName" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="JobApplication.Position" class="form-label"></label>
+            <input asp-for="JobApplication.Position" class="form-control" />
+            <span asp-validation-for="JobApplication.Position" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="JobApplication.DateApplied" class="form-label"></label>
+            <input asp-for="JobApplication.DateApplied" class="form-control" type="date" />
+            <span asp-validation-for="JobApplication.DateApplied" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="JobApplication.Status" class="form-label"></label>
+            <select asp-for="JobApplication.Status" class="form-select"
+                    asp-items="Html.GetEnumSelectList<JobTracker.Models.ApplicationStatus>()">
+            </select>
+            <span asp-validation-for="JobApplication.Status" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="JobApplication.Notes" class="form-label"></label>
+            <textarea asp-for="JobApplication.Notes" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="JobApplication.Notes" class="text-danger small"></span>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,80 @@
+@page
+@model JobTracker.Pages.JobApplications.IndexModel
+@{
+    ViewData["Title"] = "My Job Applications";
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <a asp-page="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add New Application
+    </a>
+    <a asp-page="Export" class="btn btn-outline-success">
+        <i class="bi bi-download"></i> Export CSV
+    </a>
+
+    <form method="get" class="d-flex flex-wrap gap-2">
+        <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="form-control" placeholder="Search company or position" />
+        <select name="StatusFilter" class="form-select">
+            <option value="">-- All Statuses --</option>
+            @foreach (var status in Enum.GetValues(typeof(JobTracker.Models.ApplicationStatus)))
+            {
+                <option value="@status" selected="@(status.ToString() == Model.StatusFilter?.ToString() ? "selected" : null)">
+                    @status
+                </option>
+            }
+        </select>
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+        <a href="./Index" class="btn btn-outline-secondary">Clear</a>
+    </form>
+</div>
+
+@if (Model.JobApplicationList == null || !Model.JobApplicationList.Any())
+{
+    <div class="alert alert-info">
+        No job applications found. Try adjusting your filters or click <strong>Add New Application</strong> to start tracking!
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Company</th>
+                    <th>Position</th>
+                    <th>Date Applied</th>
+                    <th>Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var app in Model.JobApplicationList)
+                {
+                    <tr>
+                        <td>@app.CompanyName</td>
+                        <td>@app.Position</td>
+                        <td>@app.DateApplied.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <span class="badge 
+                                @(app.Status == JobTracker.Models.ApplicationStatus.Applied ? "bg-secondary" : 
+                                  app.Status == JobTracker.Models.ApplicationStatus.Interviewing ? "bg-info" : 
+                                  app.Status == JobTracker.Models.ApplicationStatus.Offer ? "bg-success" : 
+                                  "bg-danger")">
+                                @app.Status
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a asp-page="Edit" asp-route-id="@app.Id" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-page="Details" asp-route-id="@app.Id" class="btn btn-sm btn-info">Details</a>
+                                <a asp-page="Delete" asp-route-id="@app.Id" class="btn btn-sm btn-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

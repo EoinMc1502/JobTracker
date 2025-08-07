@@ -1,0 +1,89 @@
+﻿@page
+@model JobTracker.Pages.DashboardModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+@if (Model.TotalApplications == 0)
+{
+    <div class="alert alert-info">No job applications yet. Start by adding a new one!</div>
+}
+else
+{
+    <div class="row mb-4">
+        <div class="col-md-3" >
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Applications</h5>
+                    <p class="card-text display-6">@Model.TotalApplications</p>
+                </div>
+            </div>
+        </div>
+        @foreach (var status in Model.StatusCounts)
+        {
+            <div class="col-md-3">
+                <div class="card text-white bg-secondary mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">@status.Key</h5>
+                        <p class="card-text display-6">@status.Value</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="barChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.StatusCounts.Keys));
+        const data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.StatusCounts.Values));
+
+        const barCtx = document.getElementById('barChart');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Applications by Status',
+                    data: data,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0 }
+                    }
+                }
+            }
+        });
+
+        const pieCtx = document.getElementById('pieChart');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Applications by Status',
+                    data: data
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    </script>
+}
+
