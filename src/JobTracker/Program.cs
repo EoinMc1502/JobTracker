@@ -16,6 +16,17 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+catch (Exception ex)
+{
+    app.Logger.LogError(ex, "Database migration failed on startup.");
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

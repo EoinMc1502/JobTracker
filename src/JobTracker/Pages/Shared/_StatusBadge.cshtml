@@ -1,0 +1,14 @@
+@model JobTracker.Models.ApplicationStatus
+
+@{
+    var cls = Model switch
+    {
+        JobTracker.Models.ApplicationStatus.Applied => "bg-primary",
+        JobTracker.Models.ApplicationStatus.Interviewing => "bg-warning text-dark",
+        JobTracker.Models.ApplicationStatus.Offer => "bg-success",
+        JobTracker.Models.ApplicationStatus.Rejected => "bg-danger",
+        _ => "bg-secondary"
+    };
+}
+
+<span class="badge @cls">@Model</span>
